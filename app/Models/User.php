@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Handphone;
 
 class User extends Authenticatable
 {
@@ -45,4 +46,7 @@ class User extends Authenticatable
       return $this->hasMany('App\Models\Order');
     }
 
+    public function handphones(){
+        return $this->hasMany('App\Models\Handphone');
+    }
 }

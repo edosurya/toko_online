@@ -76,7 +76,9 @@
             <td>{{$user->email}}</td>
             <!-- DIHAPUS -->
             <td>
-  
+              @foreach ($user->handphones as $phone)
+                  <li>{{ $phone->phone_num }}</li>
+              @endforeach
             </td>
             <!-- END -->
             <td>

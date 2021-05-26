@@ -27,7 +27,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         //
-
+        //$users = User::with('handphones')->get();
         // $user = \App\Models\User::find(2);
         // $orders = $user->orders;
 
@@ -36,25 +36,29 @@ class UserController extends Controller
         $status = $request->get('status');
 
         if($status){
-            $users = \App\Models\User::where('email', 'LIKE', "%$filterKeyword%")
+            $users = \App\Models\User::with('handphones')
+                ->where('email', 'LIKE', "%$filterKeyword%")
                 ->where('status', $status)
                 ->paginate(10);
         } else {
-            $users = \App\Models\User::paginate(10);
+            $users = \App\Models\User::with('handphones')
+                    ->paginate(10);
         }
 
         if($filterKeyword){
             if($status){
-                $users = \App\Models\User::where('email', 'LIKE', "%$filterKeyword%")
+                $users = \App\Models\User::with('handphones')
+                    ->where('email', 'LIKE', "%$filterKeyword%")
                     ->where('status', $status)
                     ->paginate(10);
             } else {
-                $users = \App\Models\User::where('email', 'LIKE', "%$filterKeyword%")
+                $users = \App\Models\User::with('handphones')
+                        ->where('email', 'LIKE', "%$filterKeyword%")
                         ->paginate(10);
             }
         }
 
-        
+        //return $users;
         return view('users.index', ['users' => $users]);
     }
 
