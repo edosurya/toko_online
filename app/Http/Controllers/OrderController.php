@@ -74,6 +74,10 @@ class OrderController extends Controller
           total_price (cek ke table books by book_id_order)  
 
         */
+        $new_order = new \App\Models\Order;
+        $new_order->user_id = $request->get('buyer');
+        $new_order->invoice_number = $request->get('invoice_number');
+        //$new_order->total_price =  
 
         // write your code here 
 

@@ -75,7 +75,7 @@
     <br>
 
     <label for="categories">Categories</label>
-    <select multiple class="form-control {{$errors->first('categories') ? "is-invalid" : "" }}" name="categories[]" id="categories"></select>
+    <select class="form-control {{$errors->first('categories') ? "is-invalid" : "" }}" name="categories[]" multiple id="categories"></select>
     <br>
     <br>
 
@@ -135,7 +135,7 @@
 <script>
 $('#categories').select2({
   ajax: {
-    url: 'http://larashop.test/ajax/categories/search',
+    url: 'http://localhost:8000/ajax/categories/search',
     processResults: function(data){
       return {
         results: data.map(function(item){return {id: item.id, text: item.name} })
