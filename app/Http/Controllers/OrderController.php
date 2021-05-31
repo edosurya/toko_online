@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use \App\Models\User;
 use \App\Models\Book;
+use \App\Models\Order;
+use \App\Models\BookOrder;
+use DB;
 
 class OrderController extends Controller
 {
@@ -63,10 +66,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-       $request = $request->all();
-       print_r($request);
-
-
+       
        /* INPUT KE TABLE ORDER            
           param:
           user_id,
@@ -74,11 +74,28 @@ class OrderController extends Controller
           total_price (cek ke table books by book_id_order)  
 
         */
-        $new_order = new \App\Models\Order;
-        $new_order->user_id = $request->get('buyer');
-        $new_order->invoice_number = $request->get('invoice_number');
-        //$new_order->total_price =  
+        $new_order = new Order();
+        $new_order->user_id = $request->buyer;
+        $new_order->invoice_number = $request->invoice_number;
 
+        if($request->book_id_order1 != null){
+            $book_1 = Book::find($request->book_id_order1)->first();
+        }
+        
+        if($request->book_id_order2 != null){
+            $book_2 = Book::find($request->book_id_order2)->first();
+        }
+        
+        if($request->book_id_order1 != null && $request->book_id_order2 != null){
+            $new_order->total_price = ($book_1->price * $request->total_book_order1) + ($book_2->price * $request->total_book_order2);
+        }else if($request->book_id_order1 != null && $request->book_id_order2 == null){
+            $new_order->total_price = ($book_1->price * $request->total_book_order1);
+        }else if($request->book_id_order1 == null && $request->book_id_order2 != null){
+            $new_order->total_price = ($book_2->price * $request->total_book_order2);
+        }else{
+            $new_order->total_price = 0;
+        }
+        
         // write your code here 
 
 
@@ -90,8 +107,29 @@ class OrderController extends Controller
 
        */ 
 
-        // write your code here 
+        // write your code here
+        $new_order->save();
+        
+        if($request->book_id_order1 != null){
+            $new_book_order1 = new BookOrder();
+            $order = DB::table('orders')->orderBy('id', 'DESC')->first();
+            $new_book_order1->order_id = $order->id;
+            $new_book_order1->book_id = $book_1->id;
+            $new_book_order1->quantity = $request->total_book_order1;
+            $new_book_order1->save();
+        }
+        if($request->book_id_order2 != null){
+            $new_book_order2 = new BookOrder();
+            $order = DB::table('orders')->orderBy('id', 'DESC')->first();
+            $new_book_order2->order_id = $order->id;
+            $new_book_order2->book_id = $book_2->id;
+            $new_book_order2->quantity = $request->total_book_order2;
+            $new_book_order2->save();
+        }
 
+        return redirect()
+                ->route('orders.create')
+                ->with('status', 'Order successfully saved');
     }
 
     /**
